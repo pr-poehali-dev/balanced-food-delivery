@@ -19,7 +19,7 @@ const Index = () => {
   const [calories, setCalories] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
-  const [selectedProgram, setSelectedProgram] = useState('Похудение');
+  const [selectedProgram, setSelectedProgram] = useState('1300 ккал');
   const [selectedDays, setSelectedDays] = useState('7');
   const [orderName, setOrderName] = useState('');
   const [orderPhone, setOrderPhone] = useState('');
@@ -34,25 +34,60 @@ const Index = () => {
 
   const programs = [
     {
-      title: 'Похудение',
-      description: 'Индивидуальная программа для безопасного снижения веса',
-      calories: '1200-1500',
+      title: '1000 ккал',
+      description: 'Интенсивное снижение веса под контролем специалиста',
+      calories: '1000',
       icon: 'TrendingDown',
-      color: 'bg-primary/10 text-primary'
+      color: 'bg-primary/10 text-primary',
+      price: 900
     },
     {
-      title: 'Набор массы',
-      description: 'Высококалорийное питание для роста мышц',
-      calories: '2500-3000',
-      icon: 'TrendingUp',
-      color: 'bg-secondary/10 text-secondary'
+      title: '1300 ккал',
+      description: 'Комфортное похудение с разнообразным меню',
+      calories: '1300',
+      icon: 'TrendingDown',
+      color: 'bg-primary/10 text-primary',
+      price: 1000
     },
     {
-      title: 'Поддержание формы',
-      description: 'Сбалансированный рацион для вашей активности',
-      calories: '1800-2200',
+      title: '1500 ккал',
+      description: 'Сбалансированное снижение веса',
+      calories: '1500',
+      icon: 'Scale',
+      color: 'bg-secondary/10 text-secondary',
+      price: 1100
+    },
+    {
+      title: '1800 ккал',
+      description: 'Поддержание формы и легкое похудение',
+      calories: '1800',
       icon: 'Activity',
-      color: 'bg-accent/10 text-accent'
+      color: 'bg-accent/10 text-accent',
+      price: 1200
+    },
+    {
+      title: '2200 ккал',
+      description: 'Поддержание веса при активном образе жизни',
+      calories: '2200',
+      icon: 'Zap',
+      color: 'bg-accent/10 text-accent',
+      price: 1300
+    },
+    {
+      title: '2500 ккал',
+      description: 'Набор мышечной массы и активные тренировки',
+      calories: '2500',
+      icon: 'TrendingUp',
+      color: 'bg-secondary/10 text-secondary',
+      price: 1400
+    },
+    {
+      title: '3500 ккал',
+      description: 'Максимальный набор массы для атлетов',
+      calories: '3500',
+      icon: 'Dumbbell',
+      color: 'bg-primary/10 text-primary',
+      price: 1600
     }
   ];
 
@@ -88,19 +123,19 @@ const Index = () => {
       name: 'Анна К.',
       text: 'За 2 месяца похудела на 8 кг! Еда вкусная, доставка всегда вовремя. Очень довольна результатом!',
       rating: 5,
-      program: 'Похудение'
+      program: '1300 ккал'
     },
     {
       name: 'Дмитрий С.',
       text: 'Отличный сервис! Набрал 5 кг мышечной массы за 3 месяца. Меню разнообразное, калорийность подобрана идеально.',
       rating: 5,
-      program: 'Набор массы'
+      program: '2500 ккал'
     },
     {
       name: 'Елена М.',
       text: 'Удобно для занятых людей. Не нужно думать о готовке, всё привозят готовое. Качество блюд на высоте!',
       rating: 5,
-      program: 'Поддержание формы'
+      program: '1800 ккал'
     }
   ];
 
@@ -124,12 +159,8 @@ const Index = () => {
   ];
 
   const calculateOrderPrice = () => {
-    const basePrices: Record<string, number> = {
-      'Похудение': 1200,
-      'Набор массы': 1500,
-      'Поддержание формы': 1300
-    };
-    const basePrice = basePrices[selectedProgram] || 1200;
+    const selectedProgramData = programs.find(p => p.title === selectedProgram);
+    const basePrice = selectedProgramData?.price || 1000;
     const days = Number(selectedDays);
     const discount = days >= 30 ? 0.15 : days >= 14 ? 0.1 : days >= 7 ? 0.05 : 0;
     return Math.round(basePrice * days * (1 - discount));
@@ -183,9 +214,11 @@ const Index = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Похудение">Похудение</SelectItem>
-                        <SelectItem value="Набор массы">Набор массы</SelectItem>
-                        <SelectItem value="Поддержание формы">Поддержание формы</SelectItem>
+                        {programs.map((program) => (
+                          <SelectItem key={program.title} value={program.title}>
+                            {program.title}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -387,7 +420,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
             {programs.map((program, index) => (
               <Card key={index} className="hover:shadow-xl transition-all duration-300 hover-scale border-2 hover:border-primary/20">
                 <CardHeader>
@@ -398,9 +431,12 @@ const Index = () => {
                   <CardDescription className="text-base">{program.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Icon name="Flame" className="text-primary" size={20} />
-                    <span className="font-semibold">{program.calories} ккал/день</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Icon name="Flame" className="text-primary" size={20} />
+                      <span className="font-semibold">{program.calories} ккал/день</span>
+                    </div>
+                    <div className="text-lg font-bold text-primary">{program.price} ₽/день</div>
                   </div>
                   <Separator />
                   <div className="space-y-2 text-sm text-muted-foreground">
@@ -424,7 +460,7 @@ const Index = () => {
                       setOrderDialogOpen(true);
                     }}
                   >
-                    Выбрать программу
+                    Выбрать
                   </Button>
                 </CardContent>
               </Card>
