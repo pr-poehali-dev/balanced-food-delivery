@@ -7,6 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
@@ -14,6 +17,13 @@ const Index = () => {
   const [height, setHeight] = useState('');
   const [age, setAge] = useState('');
   const [calories, setCalories] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState('Похудение');
+  const [selectedDays, setSelectedDays] = useState('7');
+  const [orderName, setOrderName] = useState('');
+  const [orderPhone, setOrderPhone] = useState('');
+  const [orderEmail, setOrderEmail] = useState('');
 
   const calculateCalories = () => {
     if (weight && height && age) {
@@ -113,6 +123,24 @@ const Index = () => {
     }
   ];
 
+  const calculateOrderPrice = () => {
+    const basePrices: Record<string, number> = {
+      'Похудение': 1200,
+      'Набор массы': 1500,
+      'Поддержание формы': 1300
+    };
+    const basePrice = basePrices[selectedProgram] || 1200;
+    const days = Number(selectedDays);
+    const discount = days >= 30 ? 0.15 : days >= 14 ? 0.1 : days >= 7 ? 0.05 : 0;
+    return Math.round(basePrice * days * (1 - discount));
+  };
+
+  const handleOrderSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert(`Спасибо за заказ! Мы свяжемся с вами по номеру ${orderPhone}`);
+    setOrderDialogOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-muted/30">
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b">
@@ -133,9 +161,156 @@ const Index = () => {
             <a href="#faq" className="hover:text-primary transition-colors">FAQ</a>
             <a href="#contacts" className="hover:text-primary transition-colors">Контакты</a>
           </div>
-          <Button className="gradient-coral-turquoise text-white hover:opacity-90">
-            Заказать
-          </Button>
+          <div className="flex items-center gap-2">
+            <Dialog open={orderDialogOpen} onOpenChange={setOrderDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="hidden md:flex gradient-coral-turquoise text-white hover:opacity-90">
+                  Заказать
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Заказать программу питания</DialogTitle>
+                  <DialogDescription>
+                    Выберите программу и количество дней. Мы свяжемся с вами для подтверждения заказа.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleOrderSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Программа</Label>
+                    <Select value={selectedProgram} onValueChange={setSelectedProgram}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Похудение">Похудение</SelectItem>
+                        <SelectItem value="Набор массы">Набор массы</SelectItem>
+                        <SelectItem value="Поддержание формы">Поддержание формы</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Количество дней</Label>
+                    <Select value={selectedDays} onValueChange={setSelectedDays}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="3">3 дня</SelectItem>
+                        <SelectItem value="7">7 дней (скидка 5%)</SelectItem>
+                        <SelectItem value="14">14 дней (скидка 10%)</SelectItem>
+                        <SelectItem value="30">30 дней (скидка 15%)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Итого:</span>
+                      <span className="text-2xl font-bold text-primary">{calculateOrderPrice()} ₽</span>
+                    </div>
+                  </div>
+                  <Separator />
+                  <div className="space-y-2">
+                    <Label htmlFor="order-name">Ваше имя</Label>
+                    <Input
+                      id="order-name"
+                      placeholder="Иван Иванов"
+                      value={orderName}
+                      onChange={(e) => setOrderName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="order-phone">Телефон</Label>
+                    <Input
+                      id="order-phone"
+                      placeholder="+7 (900) 123-45-67"
+                      value={orderPhone}
+                      onChange={(e) => setOrderPhone(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="order-email">Email</Label>
+                    <Input
+                      id="order-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={orderEmail}
+                      onChange={(e) => setOrderEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full gradient-coral-turquoise text-white hover:opacity-90">
+                    Оформить заказ
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Icon name="Menu" size={24} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px]">
+                <div className="flex flex-col gap-6 mt-8">
+                  <a 
+                    href="#programs" 
+                    className="text-lg hover:text-primary transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Программы
+                  </a>
+                  <a 
+                    href="#menu" 
+                    className="text-lg hover:text-primary transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Меню
+                  </a>
+                  <a 
+                    href="#calculator" 
+                    className="text-lg hover:text-primary transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Калькулятор
+                  </a>
+                  <a 
+                    href="#reviews" 
+                    className="text-lg hover:text-primary transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Отзывы
+                  </a>
+                  <a 
+                    href="#faq" 
+                    className="text-lg hover:text-primary transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    FAQ
+                  </a>
+                  <a 
+                    href="#contacts" 
+                    className="text-lg hover:text-primary transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Контакты
+                  </a>
+                  <Separator />
+                  <Button 
+                    className="gradient-coral-turquoise text-white hover:opacity-90"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setOrderDialogOpen(true);
+                    }}
+                  >
+                    Заказать программу
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </nav>
 
@@ -157,7 +332,11 @@ const Index = () => {
                 Сбалансированные программы питания под ваши цели. Свежие блюда каждый день. Без готовки и подсчёта калорий.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="gradient-coral-turquoise text-white hover:opacity-90">
+                <Button 
+                  size="lg" 
+                  className="gradient-coral-turquoise text-white hover:opacity-90"
+                  onClick={() => setOrderDialogOpen(true)}
+                >
                   <Icon name="Sparkles" className="mr-2" size={20} />
                   Подобрать программу
                 </Button>
@@ -238,7 +417,13 @@ const Index = () => {
                       <span>Без глютена и ГМО</span>
                     </div>
                   </div>
-                  <Button className="w-full gradient-coral-turquoise text-white hover:opacity-90">
+                  <Button 
+                    className="w-full gradient-coral-turquoise text-white hover:opacity-90"
+                    onClick={() => {
+                      setSelectedProgram(program.title);
+                      setOrderDialogOpen(true);
+                    }}
+                  >
                     Выбрать программу
                   </Button>
                 </CardContent>
