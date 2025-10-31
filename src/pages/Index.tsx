@@ -395,11 +395,32 @@ const Index = () => {
             </div>
             <div className="relative animate-scale-in">
               <div className="absolute -top-4 -right-4 w-72 h-72 gradient-mint rounded-full blur-3xl opacity-20"></div>
-              <img
-                src="https://cdn.poehali.dev/projects/a211daab-3bd9-496b-ae61-c31666a94863/files/3fe12d63-c58f-459f-b30c-7ec991c044dd.jpg"
-                alt="Здоровое питание"
-                className="rounded-3xl shadow-2xl relative z-10 w-full hover-scale"
-              />
+              <div className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 rounded-3xl shadow-2xl relative z-10 w-full hover-scale p-12 flex flex-col items-center justify-center min-h-[400px]">
+                <div className="w-24 h-24 rounded-full gradient-coral-turquoise flex items-center justify-center mb-6">
+                  <Icon name="Salad" className="text-white" size={48} />
+                </div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-8">
+                  ЗдоровЕда
+                </div>
+                <div className="grid grid-cols-2 gap-4 w-full max-w-md">
+                  <div className="bg-white rounded-2xl p-6 shadow-lg flex flex-col items-center">
+                    <Icon name="Salad" className="text-accent mb-2" size={32} />
+                    <div className="text-xs text-muted-foreground">Завтрак</div>
+                  </div>
+                  <div className="bg-white rounded-2xl p-6 shadow-lg flex flex-col items-center">
+                    <Icon name="Apple" className="text-secondary mb-2" size={32} />
+                    <div className="text-xs text-muted-foreground">Перекус</div>
+                  </div>
+                  <div className="bg-white rounded-2xl p-6 shadow-lg flex flex-col items-center">
+                    <Icon name="Beef" className="text-primary mb-2" size={32} />
+                    <div className="text-xs text-muted-foreground">Обед</div>
+                  </div>
+                  <div className="bg-white rounded-2xl p-6 shadow-lg flex flex-col items-center">
+                    <Icon name="Fish" className="text-accent mb-2" size={32} />
+                    <div className="text-xs text-muted-foreground">Ужин</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
