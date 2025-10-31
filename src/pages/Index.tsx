@@ -776,8 +776,8 @@ const Index = () => {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
                   <Icon name="Clock" className="text-primary" size={32} />
                 </div>
-                <h3 className="font-semibold mb-2">Утренняя доставка</h3>
-                <p className="text-sm text-muted-foreground">С 6:00 до 8:00 каждый день</p>
+                <h3 className="font-semibold mb-2">Вечерняя доставка</h3>
+                <p className="text-sm text-muted-foreground">С 18:00 до 22:00 </p>
               </CardContent>
             </Card>
             <Card className="text-center hover:shadow-lg transition-all hover-scale">
